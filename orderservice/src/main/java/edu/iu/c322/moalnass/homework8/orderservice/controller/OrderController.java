@@ -5,6 +5,10 @@ import edu.iu.c322.moalnass.homework8.orderservice.Model.OrderItem;
 import edu.iu.c322.moalnass.homework8.orderservice.Repository.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import edu.iu.c322.moalnass.homework8.orderservice.Model.Return;
+import edu.iu.c322.moalnass.homework8.orderservice.Repository.ReturnRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +18,11 @@ import java.util.Optional;
 public class OrderController {
 
     private OrderRepository repository;
+    private ReturnRepository returnRepository;
 
-    public OrderController(OrderRepository repository) {
+    public OrderController(OrderRepository repository, ReturnRepository returnRepository) {
         this.repository = repository;
+        this.returnRepository = returnRepository;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +45,18 @@ public class OrderController {
     @GetMapping("/order/{orderId}")
     public Optional<Order> findByOrderId(@PathVariable int orderId){
         return repository.findById(orderId);
+
+
+    }
+
+    @PutMapping("/return")
+    public void submitReturnRequest(@RequestBody Return returnRequest){
+        Optional<Order> order = repository.findById(returnRequest.getOrderId());
+        if(!order.isPresent()) {
+            throw new IllegalStateException("order with this order id was not found.");
+        }
+
+        returnRepository.save(returnRequest);
     }
 
 }
