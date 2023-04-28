@@ -3,6 +3,7 @@ package edu.iu.c322.moalnass.homework8.orderservice.controller;
 import edu.iu.c322.moalnass.homework8.orderservice.Model.Order;
 import edu.iu.c322.moalnass.homework8.orderservice.Model.OrderItem;
 import edu.iu.c322.moalnass.homework8.orderservice.Repository.OrderRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import edu.iu.c322.moalnass.homework8.orderservice.Model.Return;
@@ -27,7 +28,8 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public int create(@RequestBody Order order){
+    public int create(@Valid  @RequestBody Order order){
+
 
         for(int i = 0; i < order.getItems().size(); i++){
             OrderItem item = order.getItems().get(i);
@@ -57,6 +59,15 @@ public class OrderController {
         }
 
         returnRepository.save(returnRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id){
+        Optional<Order> order = repository.findById(id);
+        if (!order.isPresent()) {
+            throw new IllegalStateException("Order with id " + id + " does not exist.");
+        }
+        repository.deleteById(id);
     }
 
 }

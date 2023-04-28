@@ -3,12 +3,15 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Min(value = 1)
     private int customerId;
     private float total;
 
